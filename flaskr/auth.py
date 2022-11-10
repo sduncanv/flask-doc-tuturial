@@ -32,14 +32,14 @@ def register():
         if error is None:
             try:
                 db.execute(
-                    "INSERT INTO user (username, password) VALUES (?, ?)",
-                    (username, generate_password_hash(password))
+                    "INSERT INTO user (username, password) VALUES (?, ?)", (username, generate_password_hash(password)),
                 )
                 db.commit()
-            except db.IntegrityError:
+                print(f' ------ {error} -----')
+            except Exception:
                 error = f'User {username} is already registered.'
             else:
-                return redirect(url_for('auth.login'))
+                return redirect(url_for('auth.login.html'))
         flash(error)
     
     return render_template('auth/register.html')
@@ -74,7 +74,7 @@ def login():
 def load_logged_in_user():
     user_id = session.get('user_id')
 
-    if user_id in None:
+    if user_id is None:
         g.user = None
     else:
         g.user = get_db().execute(
